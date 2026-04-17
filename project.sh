@@ -63,13 +63,18 @@ then
 			then
        		 	# If it exists, change name and move the folder
         			usermod -l "$Required_value" -d "/home/$Required_value" -m "$username"
+				groupmod -n "$Required_value" "$username"
     			else
        		 	# If it doesn't exist, just change the name and update the path in /etc/passwd
                			usermod -l "$Required_value" -d "/home/$Required_value" "$username"
+				groupmod -n "$Required_value" "$username"
 			fi	
 		elif [ "$Mod_OPTION" == "UID" ]
 		then
 			usermod -u "$Required_value" "$username"
+			groupmod -g "$Required_value" "$username"
+			chown -R "$Required_value:$Required_value" "/home/$username"
+
 		elif [ "$Mod_OPTION" == "Shell"  ]
 		then
 			usermod -s "$Required_value" "$username"
@@ -80,7 +85,7 @@ then
 
 elif [ "$OPTION" == "Delete User" ]
 then
-	username=$(whiptail --title "Delete User" --inputbox "Enter the username to be deleted" 7 30 3>&1 1>&2 2>&3)
+	username=$(whiptail --title "Delete User" --inputbox "Enter the username to be deleted" 7 60 3>&1 1>&2 2>&3)
 	userdel -r "$username"
 
 elif [ "$OPTION" == "List Users" ]
@@ -94,7 +99,7 @@ then
 
 elif [ "$OPTION" == "Modify Group" ]
 then
-	group=$(whiptail --title "Modify Group" --inputbox "Enter the group name to be modified" 7 30 3>&1 1>&2 2>&3)
+	group=$(whiptail --title "Modify Group" --inputbox "Enter the group name to be modified" 7 60 3>&1 1>&2 2>&3)
 
 	Mod_OPTION=$(whiptail --title "Modify Group" --menu "Choose an option" 15 60 4 \
         "Group Name" "Change the group's name" \
@@ -119,7 +124,7 @@ then
 
 elif [ "$OPTION" == "Delete Group" ]
 then
-	group=$(whiptail --title "Delete Group" --inputbox "Enter the group name to be deleted" 7 30 3>&1 1>&2 2>&3)
+	group=$(whiptail --title "Delete Group" --inputbox "Enter the group name to be deleted" 7 60 3>&1 1>&2 2>&3)
 	groupdel "$group"
 
 elif [ "$OPTION" == "List Groups" ]
@@ -152,11 +157,11 @@ then
 
 elif [ "$OPTION" == "Change Password" ]
 then
-	username=$(whiptail --title "Change Password" --inputbox "Enter the username whose password to be changed" 7 30 3>&1 1>&2 2>&3)
+	username=$(whiptail --title "Change Password" --inputbox "Enter the username whose password to be changed" 7 60 3>&1 1>&2 2>&3)
 	id $username &> /dev/null
 	if [ $? -eq 0 ]
         then
-		new_pass=$(whiptail --title "Change Password" --passwordbox "Enter the new password" 7 30 3>&1 1>&2 2>&3)
+		new_pass=$(whiptail --title "Change Password" --passwordbox "Enter the new password" 7 60 3>&1 1>&2 2>&3)
 		echo "$username:$new_pass" | chpasswd
 	else
 		echo "${username} does not exist"
