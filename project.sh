@@ -124,25 +124,44 @@ then
 
 elif [ "$OPTION" == "List Groups" ]
 then
-	awk 'BEGIN{FS=":"}{print $1}' /etc/group
+	awk 'BEGIN{FS=":"}{printf "%s ", $1; printf "	GID: %s \n", $3}' /etc/group
 
 elif [ "$OPTION" == "Disable User" ]
 then
 	username=$(whiptail --title "Disable User" --inputbox "Enter the username to be disabled" 7 60 3>&1 1>&2 2>&3)
-	usermod -L "$username"
-	echo "User $username has been locked."	
+	id $username &> /dev/null
+        if [ $? -eq 0 ]
+        then
+		usermod -L "$username"
+		echo "User $username has been locked."
+	else
+		echo "${username} does not exist"
+	fi	
 
 elif [ "$OPTION" == "Enable User" ]
 then
 	username=$(whiptail --title "Enable User" --inputbox "Enter the username to be enabled" 7 60 3>&1 1>&2 2>&3)
-	usermod -U "$username"
-	echo "User $username has been unlocked."
+	id $username &> /dev/null
+        if [ $? -eq 0 ]
+        then
+		usermod -U "$username"
+		echo "User $username has been unlocked."
+	else
+		echo "${username} does not exist"
+	fi
 
 elif [ "$OPTION" == "Change Password" ]
 then
 	username=$(whiptail --title "Change Password" --inputbox "Enter the username whose password to be changed" 7 30 3>&1 1>&2 2>&3)
-	new_pass=$(whiptail --title "Change Password" --passwordbox "Enter the new password" 7 30 3>&1 1>&2 2>&3)
-	echo "$username:$new_pass" | chpasswd
+	id $username &> /dev/null
+	if [ $? -eq 0 ]
+        then
+		new_pass=$(whiptail --title "Change Password" --passwordbox "Enter the new password" 7 30 3>&1 1>&2 2>&3)
+		echo "$username:$new_pass" | chpasswd
+	else
+		echo "${username} does not exist"
+	fi
+
 elif [ "$OPTION" == "About" ]
 then
 	whiptail --title "About This Program" --msgbox "User & Group Management Toolkit\n\nVersion: 1.0\nDeveloper: Tasneem Adel Khamis\n\nThis utility helps in the centralized automation for user/group lifecycles, home directory migration, and account security." 16 60
