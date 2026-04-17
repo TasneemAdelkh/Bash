@@ -77,7 +77,7 @@ sudo ./project.sh
 
 ## Notes
 
-- This script should be run with administrative privileges because it modifies system users and groups.
-- Use it carefully on production systems.
-- The script is intended for learning, practice, and basic Linux administration automation.
+# This script should be run with administrative privileges because it modifies system users and groups.
+# Use it carefully on production systems.
+# The script is intended for learning, practice, and basic Linux administration automation.
 
