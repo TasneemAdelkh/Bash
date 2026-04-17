@@ -85,7 +85,7 @@ then
 
 elif [ "$OPTION" == "List Users" ]
 then
-	awk 'BEGIN{FS=":"}{print $1}' /etc/passwd
+	awk 'BEGIN{FS=":"}{print $1 "---UID:"$3}' /etc/passwd
 
 elif [ "$OPTION" == "Add Group" ]
 then
